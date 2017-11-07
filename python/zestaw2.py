@@ -6,7 +6,6 @@ line = "I am trying to sort out a simple list, probably since I cannot identify 
 # 2.10
 print "2.10     ", len(line.split()), "\n"
 
-
 # 2.11
 print "2.11     ", '_'.join("Hello Word"), "\n"
 
