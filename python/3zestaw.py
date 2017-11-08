@@ -51,10 +51,10 @@ while True:
 # 3.5 #######################################################
 print "zadanie 3.5 Napisać program rysujący miarkę "
 n = int(raw_input("length of "))
-miarka = "".join("|...." for i in range(0, n - 1)) + "|"
+ruler = "".join("|...." for i in range(0, n - 1)) + "|"
 defaultNumOfSpaces = 5
-liczby = "".join(str(i) + (defaultNumOfSpaces-len(str(i)))*" "  for i in range(0, n))
-print miarka + "\n" + liczby
+numbers = "".join(str(i) + (defaultNumOfSpaces-len(str(i)))*" "  for i in range(0, n))
+print ruler + "\n" + numbers
 
 # 3.6 #######################################################
 print "zadanie 3.6 Napisać program rysujący prostokąt "
