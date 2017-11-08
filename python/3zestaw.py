@@ -72,9 +72,6 @@ while True:
     except ValueError:
         print "Put only two integer values!"
 
-# 3.7 ###################################################################### 
-print "zadanie 3.7 Podany fragment programu pokaże problem z wyświetlaniem list obiektów"
-
 # 3.8 ###################################################################### 
 print "zadanie 3.8  Dla dwóch sekwencji znaleźć: (a) listę elementów występujących w obu sekwencjach (bez powtórzeń), (b) listę wszystkich elementów z obu sekwencji (bez powtórzeń)."
 a = {1, 2, 3, 4, 4, 4, 5, 6, 7,}
