@@ -6,21 +6,21 @@ print "Rozwiązania zadań 3.5 i 3.6 z poprzedniego zestawu zapisać w postaci f
 
 # 3.5 #######################################################
 print "zadanie 3.5 Napisać program rysujący miarkę "
+userInput = int(raw_input("length of "))
 def drawRuler():
-    n = int(raw_input("length of "))
-    ruler = "".join("|...." for i in range(0, n - 1)) + "|"
+    ruler = "".join("|...." for i in range(0, userInput - 1)) + "|"
     defaultNumOfSpaces = 5
-    numbers = "".join(str(i) + (defaultNumOfSpaces-len(str(i)))*" "  for i in range(0, n))
+    numbers = "".join(str(i) + (defaultNumOfSpaces-len(str(i)))*" "  for i in range(0, userInput))
     return ruler + "\n" + numbers
 print drawRuler()
 
 # 3.6 #######################################################
 print "zadanie 3.6 Napisać program rysujący prostokąt "
 
+userInput = raw_input("Put height and width ")
 def drawRect():
     while True:
         try:
-            userInput = raw_input("Put height and width ")
             values = map(int, userInput.split())
             output = ""
             for i in range(0, values[0]):
@@ -37,14 +37,35 @@ print drawRect()
 # 4.3 ######################################################################
 print "Napisać iteracyjną wersję funkcji factorial(n) obliczającej silnię."
 
-factorial = lambda n: n if n == 1 else n * factorial(n-1)
+factorial = lambda n: n if n == 1 or n == 0 else n * factorial(n-1) # rekurencyjnie
+def factorialIter(n):
+    if n == 0:
+        return 1
+    fact = 1
+    for i in range(1, n+1):
+        fact*=i
+    return fact
+
 print factorial(4)
+print factorialIter(4)
 
 # 4.4 ######################################################################
 print "Napisać iteracyjną wersję funkcji fibonacci(n) obliczającej n-ty wyraz ciągu Fibonacciego."
 
 fib = lambda n: n if n < 2 else fib(n-1) + fib(n-2)
+
+def fibIter(n):
+    if n < 2:
+        return n
+    fib1 = 0
+    fib2 = 1
+    for i in range(1, n):
+        fib1, fib2 = fib2, fib1 + fib2
+    return fib2
+
+
 print fib(15)
+print fibIter(15)
 
 # 4.5 ######################################################################
 print "Napisać funkcję odwracanie(L, left, right), iteracyjnie"
