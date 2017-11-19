@@ -1,13 +1,12 @@
 #! /usr/bin/python2.7
 # -*- coding: utf-8 -*-
 import unittest
+
 import fracs
 
 
 class TestFractions(unittest.TestCase):
-
     def setUp(self):
-        self.zero = [0, 1]
         self.obj = fracs.fractional()
 
     def test_add_frac(self):
@@ -38,8 +37,9 @@ class TestFractions(unittest.TestCase):
     def test_frac2float(self):
         self.assertTrue(isinstance(self.obj.frac2float([1, 2]), float))
 
-    def tearDown(self): pass
+    def tearDown(self):
+        self.obj = 0
 
 
 if __name__ == '__main__':
-    unittest.main()     # uruchamia wszystkie testy
+    unittest.main()  # uruchamia wszystkie testy
