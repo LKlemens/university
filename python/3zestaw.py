@@ -14,7 +14,7 @@ for i in "qwerty":
 # to jest zle poniewaz chcey do dwóch zmiennych przypisać trzy obiekty
 # x, y = 1, 2, 2
 
-# nie mozemy operator przypisania nie jest zdefiniowany dla tupli 
+# nie mozemy operator przypisania nie jest zdefiniowany dla tupli
 # X = 1, 2, 3 ; X[1] = 4
 
 # chcemy przypisać element do pola które jest poza tablicą
@@ -43,7 +43,7 @@ while True:
         if userInput == "stop":
             break
         userInput = float(userInput)
-        print [userInput, userInput, pow(userInput, 3)]
+        print[userInput, userInput, pow(userInput, 3)]
     except ValueError:
         print "number, not string!"
 
@@ -53,7 +53,8 @@ print "zadanie 3.5 Napisać program rysujący miarkę "
 n = int(raw_input("length of "))
 ruler = "".join("|...." for i in range(0, n - 1)) + "|"
 defaultNumOfSpaces = 5
-numbers = "".join(str(i) + (defaultNumOfSpaces-len(str(i)))*" "  for i in range(0, n))
+numbers = "".join(str(i) + (defaultNumOfSpaces - len(str(i)))
+                  * " " for i in range(0, n))
 print ruler + "\n" + numbers
 
 # 3.6 #######################################################
@@ -72,36 +73,39 @@ while True:
     except ValueError:
         print "Put only two integer values!"
 
-# 3.8 ###################################################################### 
+# 3.8 ######################################################################
 print "zadanie 3.8  Dla dwóch sekwencji znaleźć: (a) listę elementów występujących w obu sekwencjach (bez powtórzeń), (b) listę wszystkich elementów z obu sekwencji (bez powtórzeń)."
-a = {1, 2, 3, 4, 4, 4, 5, 6, 7,}
-b = { 44, 23, 1, 4, 55, 45, 6, }
+a = {1, 2, 3, 4, 4, 4, 5, 6, 7, }
+b = {44, 23, 1, 4, 55, 45, 6, }
 
 a, b = set(a), set(b)
 print "a + b without repetition " + str(a.union(b))
 print " a+ b common elements " + str(a.intersection(b))
 
-# 3.9 ###################################################################### 
+# 3.9 ######################################################################
 print "zadanie 3.9 Znaleźć listę zawierającą sumy liczb z tych sekwencji. "
-print [ sum(i) for i in [[], [4], (1, 2), [3, 4], (5, 6, 7)]  ]
+print[sum(i) for i in [[], [4], (1, 2), [3, 4], (5, 6, 7)]]
 
-# 3.10 ###################################################################### 
+# 3.10 ######################################################################
 print "zadanie 3.10 Stworzyć słownik tłumaczący liczby zapisane w systemie rzymskim "
+
+
 def roman2int(string):
     result = 0
-    roman = {'I':1, 'V':5, 'X':10, 'L':50, 'C':100, 'D':500, 'M':1000} 
+    roman = {'I': 1, 'V': 5, 'X': 10, 'L': 50, 'C': 100, 'D': 500, 'M': 1000}
     if(len(string) == 1):
-        return str( roman[string[0]] )
+        return str(roman[string[0]])
 
     guard = 0
     for i in range(0, len(string)):
-        if(i < len(string) - 1 and roman[string[i]] < roman[string[i+1]]):
-            result += roman[string[i+1]] - roman[string[i]]
+        if(i < len(string) - 1 and roman[string[i]] < roman[string[i + 1]]):
+            result += roman[string[i + 1]] - roman[string[i]]
             guard += 1
         elif(guard < len(string)):
             result += roman[string[i]]
         guard += 1
-    return str( result )
+    return str(result)
+
 
 print "M: " + roman2int("M")
 print "IX: " + roman2int("IX")

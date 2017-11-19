@@ -22,7 +22,7 @@ print "2.14     ", elem, len(elem), "\n"
 # 2.15
 L = [12, 234, 3453, 6542, 345]
 print "2.15     ", ''.join(str(L))
-print "2.15     ", ''.join([ str(word) for word in L ]), "\n"
+print "2.15     ", ''.join([str(word) for word in L]), "\n"
 
 # 2.16
 Line = "assad;f sadf  GvR dsaf sad"
@@ -34,7 +34,7 @@ print "2.17     ", sorted(line.split(), key=len), "\n"
 
 # 2.18
 num = 213491234124012304045489329503205
-print "2.18     ", len( re.findall('0', str(num)) ), "\n"
+print "2.18     ", len(re.findall('0', str(num))), "\n"
 
 # 2.19
 L = [1, 2, 3, 33, 44, 45, 123, 345, 456, 567, 5]
