@@ -42,8 +42,8 @@ while True:
         userInput = raw_input("Give a number ")
         if userInput == "stop":
             break
-        userInput = int(userInput)
-        print [int(userInput), int(userInput), pow(int(userInput), 3)]
+        userInput = float(userInput)
+        print [userInput, userInput, pow(userInput, 3)]
     except ValueError:
         print "number, not string!"
 
