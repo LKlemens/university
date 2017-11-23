@@ -65,8 +65,8 @@ public class Ball implements Runnable  {
 
   public void suspendBall() {
     try {
-      synchronized(this) { // bez tego wywala wyjatek , a z synchronized freezuje apke
-        this.wait();
+      synchronized(thread) { // bez tego wywala wyjatek , a z synchronized freezuje apke
+        thread.wait();
       }
     } catch (InterruptedException e) {
       e.printStackTrace();
