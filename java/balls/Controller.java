@@ -45,13 +45,13 @@ public class Controller {
 
   private boolean ifBallWasClicked(int mouseX, int mouseY, Ball ball) {
     System.out.println("jestem w mouse " + mouseX + " " + mouseY);
-    return Math.sqrt(mouseX - ball.getBallPos().getKey() + (mouseY - ball.getBallPos().getValue())) < ball.radius;
+    return (Math.pow( mouseX - ball.getBallPos().getKey(), 2) + Math.pow(mouseY - ball.getBallPos().getValue(), 2) < Math.pow(ball.radius/2, 2));
   }
 
   public void mousePressed(MouseEvent mouseEvent) {
     for (Ball ball : balls) {
       if (ifBallWasClicked((int) mouseEvent.getX(), (int) mouseEvent.getY(), ball)) {
-        System.out.println("jestem w ifie");
+        System.out.println("jestem w ifie " + " x " + ball.getBallPos().getKey() + " y " +ball.getBallPos().getValue() + " radius " + ball.radius );
         ball.suspendBall();
       }
     }
@@ -89,7 +89,7 @@ public class Controller {
 
   private void clear() {
     GraphicsContext graphicsConTemp = canvas.getGraphicsContext2D();
-    graphicsConTemp.setFill(Color.WHITE);
+    graphicsConTemp.setFill(Color.CORNSILK);
     graphicsConTemp.setGlobalBlendMode(BlendMode.SRC_OVER);
     graphicsConTemp.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
   }

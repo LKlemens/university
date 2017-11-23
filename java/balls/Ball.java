@@ -5,39 +5,47 @@ import java.util.Random;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
 
-public class Ball {
+public class Ball implements Runnable  {
   private int ballSpeedX = 3;
   private int ballSpeedY = 4;
   private int ballPosX;
   private int ballPosY;
+  final private int canvasWidth;
+  final private int canvasHeight;
   int radius;
   Color color;
   Thread thread;
 
+
   Ball(int canvasWidth, int canvasHeight) {
+    this.canvasWidth = canvasWidth;
+    this.canvasHeight = canvasHeight;
     setRandomRadiusAndPos(canvasWidth, canvasHeight);
     setRandomColor();
-    thread = new Thread(() -> {
-      while (true) {
-        ballPosX += ballSpeedX;
-        ballPosY += ballSpeedY;
-        try {
-          Thread.sleep(30);
-        } catch (InterruptedException e) {
-          e.printStackTrace();
-        }
-        if (ballPosX + radius >= canvasWidth) {
-          ballSpeedX = -ballSpeedX;
-        } else if (ballPosX < 0) {
-          ballSpeedX = -ballSpeedX;
-        } else if (ballPosY + radius >= canvasHeight) {
-          ballSpeedY = -ballSpeedY;
-        } else if (ballPosY < 0) {
-          ballSpeedY = -ballSpeedY;
-        }
-      }
-    });
+    thread = new Thread(this);
     thread.start();
+  }
+
+  @Override
+  public void run() {
+    while (true) {
+      ballPosX += ballSpeedX;
+      ballPosY += ballSpeedY;
+      try {
+        Thread.sleep(30);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+      if (ballPosX + radius >= canvasWidth) {
+        ballSpeedX = -ballSpeedX;
+      } else if (ballPosX < 0) {
+        ballSpeedX = -ballSpeedX;
+      } else if (ballPosY + radius >= canvasHeight) {
+        ballSpeedY = -ballSpeedY;
+      } else if (ballPosY < 0) {
+        ballSpeedY = -ballSpeedY;
+      }
+    }
   }
 
   private void setRandomRadiusAndPos(int canvasWidth, int canvasHeight) {
@@ -57,7 +65,7 @@ public class Ball {
 
   public void suspendBall() {
     try {
-      synchronized(thread) { // bez tego wywala wyjatek , a z synchronized freezuje apke
+      synchronized(this) { // bez tego wywala wyjatek , a z synchronized freezuje apke
         this.wait();
       }
     } catch (InterruptedException e) {
@@ -68,5 +76,6 @@ public class Ball {
   public void resumeBall() {
     thread.notify();
   }
+
 
 }
