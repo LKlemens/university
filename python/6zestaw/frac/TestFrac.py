@@ -9,6 +9,12 @@ class TestFractions(unittest.TestCase):
     def setUp(self):
         self.frac1 = Frac(1, 2)
 
+    def test_str_frac(self):
+        self.assertEqual(self.frac1.__str__(), "1 / 2")
+
+    def test_repr_frac(self):
+        self.assertEqual(self.frac1.__repr__(), "Frac(1, 2)")
+
     def test_add_frac(self):
         self.assertEqual(self.frac1.__add__(Frac(1, 3)), Frac(5, 6))
 
@@ -21,9 +27,8 @@ class TestFractions(unittest.TestCase):
     def test_div_frac(self):
         self.assertEqual(self.frac1.__div__(Frac(4, 1)), Frac(1, 8))
 
-    def test_is_positive(self):
-        self.assertTrue(self.frac1.__pos__())
-        self.assertFalse(Frac(-1, 2).__pos__())
+    def test_is_pos(self):
+        self.assertEqual(self.frac1, self.frac1.__pos__())
 
     def test_cmp_frac(self):
         self.assertEqual(self.frac1.__cmp__(Frac(1, 2)), 0)
@@ -31,8 +36,7 @@ class TestFractions(unittest.TestCase):
         self.assertEqual(self.frac1.__cmp__(Frac(1, 3)), 1)
 
     def test_frac2float(self):
-        self.assertTrue(isinstance(self.frac1.__float__().x, float))
-        self.assertTrue(isinstance(self.frac1.__float__().y, float))
+        self.assertEqual(self.frac1.__float__(), 0.5)
 
     def tearDown(self):
         self.frac1 = None
