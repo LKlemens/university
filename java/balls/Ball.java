@@ -1,50 +1,64 @@
 package balls;
 
 import java.util.Random;
+import java.util.concurrent.Semaphore;
 
 import javafx.scene.paint.Color;
-import javafx.util.Pair;
 
-public class Ball implements Runnable  {
+public class Ball {
   private int ballSpeedX = 3;
   private int ballSpeedY = 4;
-  private int ballPosX;
-  private int ballPosY;
-  final private int canvasWidth;
-  final private int canvasHeight;
+  int ballPosX, ballPosY;
   int radius;
+  boolean semaphoreAcquired = false;
+  boolean isRunning = true;
   Color color;
   Thread thread;
+  Semaphore semaphore;
 
-
-  Ball(int canvasWidth, int canvasHeight) {
-    this.canvasWidth = canvasWidth;
-    this.canvasHeight = canvasHeight;
+  Ball(int canvasWidth, int canvasHeight, Semaphore semaphore) {
+    this.semaphore = semaphore;
     setRandomRadiusAndPos(canvasWidth, canvasHeight);
     setRandomColor();
-    thread = new Thread(this);
+    thread = new Thread(() -> {
+      while (true) {
+        try {
+          ballIsInRectanle();
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+        ballPosX += ballSpeedX;
+        ballPosY += ballSpeedY;
+        try {
+          Thread.sleep(30);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+        if (ballPosX + radius >= canvasWidth) {
+          ballSpeedX = -ballSpeedX;
+        } else if (ballPosX < 0) {
+          ballSpeedX = -ballSpeedX;
+        } else if (ballPosY + radius >= canvasHeight) {
+          ballSpeedY = -ballSpeedY;
+        } else if (ballPosY < 0) {
+          ballSpeedY = -ballSpeedY;
+        }
+      }
+    });
     thread.start();
   }
 
-  @Override
-  public void run() {
-    while (true) {
-      ballPosX += ballSpeedX;
-      ballPosY += ballSpeedY;
-      try {
-        Thread.sleep(30);
-      } catch (InterruptedException e) {
-        e.printStackTrace();
+  private void ballIsInRectanle() throws InterruptedException {
+    if (ballPosX + 0 > Controller.REC_X - radius && ballPosX + 0 < (Controller.REC_X + Controller.REC_SIDE)
+        && ballPosY + 0 > Controller.REC_Y - radius
+        && ballPosY + 0 < (Controller.REC_Y + Controller.REC_SIDE)) {
+      if (!semaphoreAcquired) {
+        semaphore.acquire();
+        semaphoreAcquired = true;
       }
-      if (ballPosX + radius >= canvasWidth) {
-        ballSpeedX = -ballSpeedX;
-      } else if (ballPosX < 0) {
-        ballSpeedX = -ballSpeedX;
-      } else if (ballPosY + radius >= canvasHeight) {
-        ballSpeedY = -ballSpeedY;
-      } else if (ballPosY < 0) {
-        ballSpeedY = -ballSpeedY;
-      }
+    } else if (semaphoreAcquired) {
+      semaphore.release();
+      semaphoreAcquired = false;
     }
   }
 
@@ -59,23 +73,18 @@ public class Ball implements Runnable  {
     color = Color.rgb(rand.nextInt(256), rand.nextInt(256), rand.nextInt(256));
   }
 
-  public Pair<Integer, Integer> getBallPos() {
-    return new Pair<>(ballPosX, ballPosY);
+  void suspendBall() {
+    thread.suspend();
+    isRunning = false;
   }
 
-  public void suspendBall() {
-    try {
-      synchronized(thread) { // bez tego wywala wyjatek , a z synchronized freezuje apke
-        thread.wait();
-      }
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    }
+  void resumeBall() {
+    thread.resume();
+    isRunning = true;
   }
 
-  public void resumeBall() {
-    thread.notify();
+  void stopBall() {
+    thread.stop();
   }
-
 
 }

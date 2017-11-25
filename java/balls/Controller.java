@@ -1,64 +1,64 @@
 package balls;
 
 import java.util.ArrayList;
-import java.util.Random;
+import java.util.concurrent.Semaphore;
 
 import javafx.event.ActionEvent;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Label;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 
 public class Controller {
+  static int REC_X = 300;
+  static int REC_Y = 200;
+  static int REC_SIDE = 200;
 
-  public Label label;
   public Canvas canvas;
-  private GraphicsContext graphicsCon;
-  public ArrayList<Ball> balls;
-  boolean startFlag;
-  Random rand;
-  Thread thread;
+  ArrayList<Ball> balls;
+  Semaphore semaphore;
 
-  public void initialize() {
-    graphicsCon = canvas.getGraphicsContext2D();
+  public void initialize() throws InterruptedException {
+    semaphore = new Semaphore(1);
     balls = new ArrayList<>();
-    rand = new Random();
-    startFlag = true;
+    drawAllBalls();
   }
 
-  public void addBall(ActionEvent actionEvent) throws InterruptedException {
-    balls.add(new Ball((int) canvas.getWidth(), (int) canvas.getHeight()));
-    if (startFlag) {
-      drawAllBalls();
-      startFlag = false;
-    }
+  public void addBall(ActionEvent actionEvent) {
+    balls.add(new Ball((int) canvas.getWidth(), (int) canvas.getHeight(), semaphore));
   }
 
-  public void drawBall(int x, int y, int radius, Color color) {
+  private void drawBall(int x, int y, int radius, Color color) {
     GraphicsContext graphicsConTemp = canvas.getGraphicsContext2D();
-    graphicsConTemp.setGlobalBlendMode(BlendMode.MULTIPLY);
+    graphicsConTemp.setGlobalBlendMode(BlendMode.DIFFERENCE);
     graphicsConTemp.setFill(color);
     graphicsConTemp.fillOval(x, y, radius, radius);
   }
 
   private boolean ifBallWasClicked(int mouseX, int mouseY, Ball ball) {
-    System.out.println("jestem w mouse " + mouseX + " " + mouseY);
-    return (Math.pow( mouseX - ball.getBallPos().getKey(), 2) + Math.pow(mouseY - ball.getBallPos().getValue(), 2) < Math.pow(ball.radius/2, 2));
+    return (Math.pow(mouseX - ball.ballPosX, 2) + Math.pow(mouseY - ball.ballPosY, 2) < Math.pow(ball.radius, 2));
   }
 
   public void mousePressed(MouseEvent mouseEvent) {
     for (Ball ball : balls) {
       if (ifBallWasClicked((int) mouseEvent.getX(), (int) mouseEvent.getY(), ball)) {
-        System.out.println("jestem w ifie " + " x " + ball.getBallPos().getKey() + " y " +ball.getBallPos().getValue() + " radius " + ball.radius );
-        ball.suspendBall();
+        if (mouseEvent.isPrimaryButtonDown()) {
+          if (ball.isRunning) {
+            ball.suspendBall();
+          } else {
+            ball.resumeBall();
+          }
+        } else if (mouseEvent.isSecondaryButtonDown()) {
+          ball.stopBall();
+          balls.remove(ball);
+        }
       }
     }
   }
 
-  public void drawAllBalls() throws InterruptedException {
-    thread = new Thread(() -> {
+  private void drawAllBalls() throws InterruptedException {
+    new Thread(() -> {
       while (true) {
         try {
           Thread.sleep(50);
@@ -67,24 +67,19 @@ public class Controller {
         }
         clear();
         drawRect();
-        for (Ball x : balls) {
-          drawBall(x.getBallPos().getKey(), x.getBallPos().getValue(), x.radius, x.color);
+        for (Ball ball : balls) {
+          drawBall(ball.ballPosX, ball.ballPosY, ball.radius, ball.color);
         }
       }
-    });
-    thread.start();
+    }).start();
 
   }
 
-  /**
-   * Draw rectangle
-   *
-   * @param actionEvent
-   */
-  public void drawRect() {
+  private void drawRect() {
+    GraphicsContext graphicsCon = canvas.getGraphicsContext2D();
     graphicsCon.setStroke(Color.web("#E11212"));
     graphicsCon.setGlobalBlendMode(BlendMode.MULTIPLY);
-    graphicsCon.strokeRect(300, canvas.getHeight() - 400, 200, 200);
+    graphicsCon.strokeRect(REC_X, REC_Y, REC_SIDE, REC_SIDE);
   }
 
   private void clear() {
