@@ -10,4 +10,3 @@
    <Canvas fx:id="canvas" GridPane.columnIndex="0" GridPane.rowSpan="6" width="800" height="600" onMousePressed="#mousePressed"/>
   <Button GridPane.columnIndex="1" GridPane.rowIndex="1" text="AddBall" onAction="#addBall" minWidth="100"/>
 </GridPane>
-

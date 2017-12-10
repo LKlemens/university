@@ -1,7 +1,6 @@
 package balls;
 
 import java.util.ArrayList;
-import java.util.concurrent.Semaphore;
 
 import javafx.event.ActionEvent;
 import javafx.scene.canvas.Canvas;
@@ -11,29 +10,47 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 
 public class Controller {
-  static int REC_X = 300;
-  static int REC_Y = 200;
-  static int REC_SIDE = 200;
+  int REC_X = 300;
+  int REC_Y = 200;
+  int REC_SIDE = 200;
 
   public Canvas canvas;
   ArrayList<Ball> balls;
-  Semaphore semaphore;
+  Box box;
 
   public void initialize() throws InterruptedException {
-    semaphore = new Semaphore(1);
     balls = new ArrayList<>();
+    box = new Box(REC_X, REC_Y, REC_SIDE, REC_SIDE);
     drawAllBalls();
   }
 
   public void addBall(ActionEvent actionEvent) {
-    balls.add(new Ball((int) canvas.getWidth(), (int) canvas.getHeight(), semaphore));
+    balls.add(new Ball((int) canvas.getWidth(), (int) canvas.getHeight(), box));
   }
 
-  private void drawBall(int x, int y, int radius, Color color) {
+  private void drawAllBalls() throws InterruptedException {
+    new Thread(() -> {
+      while (true) {
+        try {
+          Thread.sleep(50);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+        clear();
+        box.draw(canvas.getGraphicsContext2D());
+        for (Ball ball : balls) {
+          ball.draw(canvas.getGraphicsContext2D());
+        }
+      }
+    }).start();
+
+  }
+
+  private void clear() {
     GraphicsContext graphicsConTemp = canvas.getGraphicsContext2D();
-    graphicsConTemp.setGlobalBlendMode(BlendMode.DIFFERENCE);
-    graphicsConTemp.setFill(color);
-    graphicsConTemp.fillOval(x, y, radius, radius);
+    graphicsConTemp.setFill(Color.CORNSILK);
+    graphicsConTemp.setGlobalBlendMode(BlendMode.SRC_OVER);
+    graphicsConTemp.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
   }
 
   private boolean ifBallWasClicked(int mouseX, int mouseY, Ball ball) {
@@ -57,36 +74,5 @@ public class Controller {
     }
   }
 
-  private void drawAllBalls() throws InterruptedException {
-    new Thread(() -> {
-      while (true) {
-        try {
-          Thread.sleep(50);
-        } catch (InterruptedException e) {
-          e.printStackTrace();
-        }
-        clear();
-        drawRect();
-        for (Ball ball : balls) {
-          drawBall(ball.ballPosX, ball.ballPosY, ball.radius, ball.color);
-        }
-      }
-    }).start();
-
-  }
-
-  private void drawRect() {
-    GraphicsContext graphicsCon = canvas.getGraphicsContext2D();
-    graphicsCon.setStroke(Color.web("#E11212"));
-    graphicsCon.setGlobalBlendMode(BlendMode.MULTIPLY);
-    graphicsCon.strokeRect(REC_X, REC_Y, REC_SIDE, REC_SIDE);
-  }
-
-  private void clear() {
-    GraphicsContext graphicsConTemp = canvas.getGraphicsContext2D();
-    graphicsConTemp.setFill(Color.CORNSILK);
-    graphicsConTemp.setGlobalBlendMode(BlendMode.SRC_OVER);
-    graphicsConTemp.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-  }
 
 }

@@ -1,8 +1,9 @@
 package balls;
 
 import java.util.Random;
-import java.util.concurrent.Semaphore;
 
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.effect.BlendMode;
 import javafx.scene.paint.Color;
 
 public class Ball {
@@ -10,14 +11,14 @@ public class Ball {
   private int ballSpeedY = 4;
   int ballPosX, ballPosY;
   int radius;
-  boolean semaphoreAcquired = false;
   boolean isRunning = true;
+  boolean isInside = false;
   Color color;
   Thread thread;
-  Semaphore semaphore;
+  Box monitor;
 
-  Ball(int canvasWidth, int canvasHeight, Semaphore semaphore) {
-    this.semaphore = semaphore;
+  Ball(int canvasWidth, int canvasHeight, Box monitor) {
+    this.monitor = monitor;
     setRandomRadiusAndPos(canvasWidth, canvasHeight);
     setRandomColor();
     thread = new Thread(() -> {
@@ -49,16 +50,14 @@ public class Ball {
   }
 
   private void ballIsInRectanle() throws InterruptedException {
-    if (ballPosX + 0 > Controller.REC_X - radius && ballPosX + 0 < (Controller.REC_X + Controller.REC_SIDE)
-        && ballPosY + 0 > Controller.REC_Y - radius
-        && ballPosY + 0 < (Controller.REC_Y + Controller.REC_SIDE)) {
-      if (!semaphoreAcquired) {
-        semaphore.acquire();
-        semaphoreAcquired = true;
+    if (monitor.isInside(ballPosX, ballPosY, radius)) {
+      if (!isInside) {
+        isInside = true;
+        monitor.enter();
       }
-    } else if (semaphoreAcquired) {
-      semaphore.release();
-      semaphoreAcquired = false;
+    } else if (isInside) {
+      isInside = false;
+      monitor.exit();
     }
   }
 
@@ -66,6 +65,13 @@ public class Ball {
     radius = new Random().nextInt(50) + 15;
     ballPosX = new Random().nextInt(canvasWidth - radius);
     ballPosY = new Random().nextInt(canvasHeight - radius);
+  }
+
+  public void draw(GraphicsContext grap) {
+    GraphicsContext graphicsConTemp = grap;
+    graphicsConTemp.setGlobalBlendMode(BlendMode.DIFFERENCE);
+    graphicsConTemp.setFill(color);
+    graphicsConTemp.fillOval(ballPosX, ballPosY, radius, radius);
   }
 
   private void setRandomColor() {
