@@ -6,6 +6,7 @@ from time import clock
 import generateList
 
 
+# algorytmy pochodzą z http://interactivepython.org/
 def bubbleSort(alist):
     for passnum in range(len(alist) - 1, 0, -1):
         for i in range(passnum):
