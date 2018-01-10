@@ -1,6 +1,6 @@
 #! /usr/bin/python2.7
 
-from random import randint
+from random import randrange
 
 
 class RandomQueue:
@@ -12,7 +12,10 @@ class RandomQueue:
         self.table.append(item)
 
     def pop(self):
-        return self.table.pop(randint(0, len(self.table)) - 1)
+        i = randrange(len(self.table))
+        # swap with the last element to awoid deleting from middle of table
+        self.table[i], self.table[-1] = self.table[-1], self.table[i]
+        return self.table.pop()  # O(1)
 
     def is_empty(self):
         return len(self.table) == 0
