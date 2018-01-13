@@ -1,5 +1,5 @@
-DYNAMIC-GENERAL-KNAPSAC
-=======================
+DYNAMIC-GENERAL-KNAPSACK
+========================
 **Dane:**
 
   :math:`P_{i,(m_i,c_i)}`, i = 1,2,3...,n;
