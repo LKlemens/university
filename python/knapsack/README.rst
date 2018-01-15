@@ -36,9 +36,12 @@ DYNAMIC-GENERAL-KNAPSACK
   czyli przepisz :math:`P_{i,j} = P_{i-1,j}` oraz :math:`Q_{i,j} = Q_{i-1,j}`
 
 
-Algorytm jest z http://www-users.mat.uni.torun.pl/~henkej/knapsack.pdf,
+Opierałem się na opracowaniu `Pana Henke`__
 z tym że na stronie w punkcie 4 jest błąd, który uwzględniłem w implementacji algorytmu.
 
 orginał: ... to przypisz :math:`P_{i-1,j} = P_{i,j-m_i} + c_i`
 
 wersja poprawiona: ... to przypisz :math:`P_{i,j} = P_{i,j-m_i} + c_i`
+
+.. _link: http://www-users.mat.uni.torun.pl/~henkej/knapsack.pdf
+__ link_
